@@ -6,9 +6,9 @@ export function counter(state=0, action) {
     case ADD_GUN: 
       return state + 1
     case REMOVE_GUN:
-      return state -1
+      return state - 1
     default:
-      return 10
+      return state
   }
 }
 
