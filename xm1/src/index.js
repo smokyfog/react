@@ -42,11 +42,14 @@ ReactDOM.render(
           <li><Link to='/dongtai/qibinglian'>动态骑兵连</Link></li>   
           <li><Link to='/dongtai/qibing'>动态骑兵</Link></li>
         </ul>
-        <Route path='/' exact component={App}></Route>
-        <Route path='/erying' component={Erying}></Route>
-        <Route path='/qibinglian' component={Qibinglian}></Route>
-        <Route path='/dongtai/:location' component={Test1}></Route>   {/* 动态路由 */}
-        <Redirect to='/qibinglian'></Redirect>   {/* 默认加载的路由 */}
+        <Switch>  {/*只渲染命中的第一个Route*/}
+          <Route path='/' exact component={App}></Route>
+          <Route path='/erying' component={Erying}></Route>
+          <Route path='/qibinglian' component={Qibinglian}></Route>
+          <Route path='/dongtai/:location' component={Test1}></Route>   {/* 动态路由 */}
+          <Route path='/:location' component={Test1}></Route>
+          <Redirect to='/qibinglian'></Redirect>   {/* 默认加载的路由 */}
+        </Switch>
       </div>
     </BrowserRouter>
   </Provider>,
