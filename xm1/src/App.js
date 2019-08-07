@@ -1,34 +1,13 @@
-// import React from 'react';
-// import logo from './logo.svg';
-// import './App.css';
-
-// function App() {
-//   return (
-//     <div className="App">
-//       <header className="App-header">
-//         <img src={logo} className="App-logo" alt="logo" />
-//         <p>
-//           Edit <code>src/App.js</code> and save to reload.
-//         </p>
-//         <a
-//           className="App-link"
-//           href="https://reactjs.org"
-//           target="_blank"
-//           rel="noopener noreferrer"
-//         >
-//           Learn React
-//         </a>
-//       </header>
-//     </div>
-//   );
-// }
-
-// export default App;
-
 import React from 'react'
 import { connect } from 'react-redux'
 import { addGun, removeGun, addGunAsync } from './index.redux'
-
+// 使用装饰器
+@connect(
+  // 你要state什么属性放到props里
+  state=>({num:state}),
+  // 你要什么方法 放到props里 自动dispatch
+  { addGun, removeGun, addGunAsync }
+)
 class App extends React.Component{
   render() {
       return (
@@ -41,12 +20,15 @@ class App extends React.Component{
     );
   }
 }
-// connect 的四个参数  
-const mapStatetoProps = (state)=>{
-  return {num:state}
-}
-const actionCreators = { addGun, removeGun, addGunAsync }
 
-// 装饰器 connect负责从外部获取组件需要的参数
-App = connect(mapStatetoProps, actionCreators)(App)
+// // connect 的四个参数  
+// const mapStatetoProps = (state)=>{
+//   return {num:state}
+// }
+// const actionCreators = { addGun, removeGun, addGunAsync }
+// // 未使用装饰器connect
+// App = connect(mapStatetoProps, actionCreators)(App)
+
 export default App
+
+
