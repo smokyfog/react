@@ -26,22 +26,27 @@
 // export default App;
 
 import React from 'react'
-import { addGUN } from './index.redux'
+import { connect } from 'react-redux'
+import { addGun, removeGun, addGunAsync } from './index.redux'
 
 class App extends React.Component{
-  // constructor(props) {
-  //   super(props)
-  // }
   render() {
-      const store = this.props.store
-      const num = store.getState()
       return (
       <div className="App">
-        现在有机枪{num}把
-        <button onClick={()=>store.dispatch(addGUN())}>申请武器</button>
+        <h3>现在有机枪{ this.props.num }把</h3>
+        <button onClick={this.props.addGun}>申请武器</button>
+        <button onClick={this.props.removeGun}>上交武器</button>
+        <button onClick={this.props.addGunAsync}>拖两天给武器</button>
       </div>
     );
   }
 }
+// connect 的四个参数  
+const mapStatetoProps = (state)=>{
+  return {num:state}
+}
+const actionCreators = { addGun, removeGun, addGunAsync }
 
+// 装饰器 connect负责从外部获取组件需要的参数
+App = connect(mapStatetoProps, actionCreators)(App)
 export default App
