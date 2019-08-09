@@ -1,10 +1,11 @@
 const app = require('express')()
 const userRoute = require('./user')
+const bodyParser = require('body-parser')
+const cookieParser = require('cookie-parser')
+const utils = require('utility')
 
-// const mongoose = require('mongoose')
-// // 链接mongodb
-// const DB_URL = 'mongodb://129.28.187.206:27017/boss'
-// mongoose.connect(DB_URL)
+app.use(cookieParser())
+app.use(bodyParser.json())
 
 app.use('/user', userRoute)
 
