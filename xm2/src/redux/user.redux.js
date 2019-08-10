@@ -5,14 +5,13 @@ import { getRedirectPath } from '../util'
 const REGISTER_SUCCESS = 'REGISTER_SUCCESS'
 const LOGIN_SUCCESS = 'LOGIN_SUCCESS'
 const ERROR_MSG = 'ERROR_MSG'
-const LOAD_DATA = ''
+const LOAD_DATA = 'LOAD_DATA'
 
 const initState = {
   redirectTo: '',
   msg: '',
   isAuth: false,
   user: '',
-  pwd: '',
   type: ''
 }
 
@@ -31,16 +30,25 @@ export function user(state = initState, action){
       return state
   }
 }
+
+
 function loginSuccess(data) {
   return { type: LOGIN_SUCCESS, payload: data }
 }
 function registerSuccess(data) {
   return { type: REGISTER_SUCCESS, payload: data }
 }
-
 function errorMsg(msg) {
   return { msg, type: ERROR_MSG}
 }
+
+
+// 用户信息
+export function loadData(userinfo) {
+  return { type: LOAD_DATA, payload: userinfo }
+}
+
+// 登录
 export function login({user, pwd}){
   if (!user || !pwd) {
     return errorMsg('用户名密码必须输入')
@@ -57,6 +65,8 @@ export function login({user, pwd}){
   }
 }
 
+
+// 注册
 export function register({user, pwd, repeatpwd, type}) {
   if (!user||!pwd||!type) {
     return errorMsg('用户名密码必须输入')

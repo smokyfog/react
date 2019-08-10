@@ -1,7 +1,14 @@
 import React from 'react'
 import axios from 'axios'
 import { withRouter } from 'react-router-dom'
+import { loadData } from '../../redux/user.redux'
+import { connect } from 'react-redux'
 @withRouter // 注意若想在此获取router的相关信息,需要引入react-router4的withRouter并进行包裹
+@connect(
+  state => state.user,
+  { loadData }
+)
+
 class AuthRoute extends React.Component{
   async componentDidMount() {
     const publicList = ['/login', '/register']
@@ -14,10 +21,11 @@ class AuthRoute extends React.Component{
     if (res.status === 200) {
       if (res.data.code === 0) {
         // 有登陆信息
-        
+        this.props.loadData(res.data.data)
       } else {
         // 无登陆信息
         // 注意若想在此获取router的相关信息,需要引入react-router4的withRouter并进行包裹
+        
         this.props.history.push('/login')
       }
     }
