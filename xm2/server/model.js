@@ -1,4 +1,5 @@
 const mongoose = require('mongoose')
+mongoose.set('useFindAndModify', false)
 // 链接mongodb
 const DB_URL = 'mongodb://129.28.187.206:27017/boss'
 mongoose.connect(DB_URL, {useNewUrlParser: true})
