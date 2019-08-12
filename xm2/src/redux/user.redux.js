@@ -5,6 +5,7 @@ import { getRedirectPath } from '../util'
 const AUTH_SUCCESS = 'AUTH_SUCCESS'
 const ERROR_MSG = 'ERROR_MSG'
 const LOAD_DATA = 'LOAD_DATA'
+const LOGOUT = 'LOGOUT'
 
 const initState = {
   redirectTo: '',
@@ -22,15 +23,19 @@ export function user(state = initState, action){
       return { ...state, isAuth: false, msg: action.msg }
     case LOAD_DATA:
       return {...state, ...action.payload}
+    case LOGOUT:
+      return { ...initState, redirectTo: './login' }
     default:
       return state
   }
 }
 
+// 信息验证成功
 function authSuccess(obj) {
   const { pwd, ...data } = obj  // 小技巧 过滤掉pwd字段
   return { type: AUTH_SUCCESS, payload: data }
 }
+// 错误信息
 function errorMsg(msg) {
   return { msg, type: ERROR_MSG}
 }
@@ -41,6 +46,12 @@ export function loadData(userinfo) {
   return { type: LOAD_DATA, payload: userinfo }
 }
 
+// 退出登录
+export function logoutSubmit() {
+  return { type: LOGOUT }
+}
+
+// 更新用户信息
 export function update(data) {
   return async dispatch => {
     let res = await axios.post('/user/update', data)
