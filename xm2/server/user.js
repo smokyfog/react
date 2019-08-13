@@ -16,13 +16,19 @@ Router.get('/list', function(req, res) {
 
 // 消息列表
 Router.get('/getmsglist', (req, res) => {
-  const user  = req.cookies.user
-  // {'$or':[{ from: user, to: user }]}
-  Chat.find({}, function(err,doc) {
-    if(!err) {
-      return res.json({code: 0, msgs: doc})
-    }
+  const user  = req.cookies.userid
+  User.find({}, function(err, userdoc) {
+    let users = {}
+    userdoc.forEach(v => {
+      users[v._id] = { name: v.user, avatar: v.avatar }
+    })
+    Chat.find({'$or': [{from: user}, {to: user}]}, function(err,doc) {
+      if(!err) {
+        return res.json({code: 0, msgs: doc, users: users})
+      }
+    })
   })
+  // {'$or':[{ from: user, to: user }]}
 })
 
 // 登录功能
@@ -70,7 +76,6 @@ Router.post('/update', function(req, res) {
   }
   const body = req.body
   User.findByIdAndUpdate(userid, body, (err, doc) => {
-    console.log(doc)
     const data = Object.assign({}, {
       user: doc.user,
       type: doc.type

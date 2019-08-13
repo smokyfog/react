@@ -1,10 +1,11 @@
 import React from 'react'
-import { List, InputItem, NavBar } from 'antd-mobile'
-import io from 'socket.io-client'
+import { List, InputItem, NavBar, Icon, Grid } from 'antd-mobile'
+// import io from 'socket.io-client'
 import { connect } from 'react-redux'
 import { getMsglist, sendMsg, recvMsg } from '../../redux/chat.redux'
+import { getChatId } from '../../util';
 
-const socket =  io('ws://localhost:3002')
+// const socket =  io('ws://localhost:3002')
 
 @connect(
   state => state,
@@ -13,16 +14,24 @@ const socket =  io('ws://localhost:3002')
 class Chat extends React.Component{
   constructor(props){
     super(props)
-    this.state = { text: '', msg: [] }
+    this.state = { 
+      text: '', 
+      msg: [],
+      showEmoji: false
+    }
+  }
+  // 解决Grid图标第一次渲染只能加载一次的bug
+  fixCarousel() {
+    setTimeout(function(){
+      window.dispatchEvent(new Event('resize'))
+    }, 0)
   }
   componentDidMount() {
-    // socket.on('recvmsg', (data) => {
-    //   this.setState({
-    //     msg: [...this.state.msg, data.text]
-    //   })
-    // })
-    this.props.getMsglist()
-    this.props.recvMsg()
+    if(!this.props.chat.chatmsg.length) {
+      this.props.getMsglist()
+      this.props.recvMsg()
+    }
+    this.fixCarousel()
   }
   handleSubmit() {
     // socket.emit('sendmsg', {text: this.state.text})
@@ -33,19 +42,47 @@ class Chat extends React.Component{
     this.setState({text: ''})
   }
   render() {
-    const user = this.props.match.params.user
+    const emoji = `😀 😃 😄 😂 🙂 😊 😇 🤩 😍 😙 😝 🤮 😟 😡 ❤ 🤔 👀 🐻 🌇 ⚽ 🙃 🐺 🐵 🤽‍ ♂️ 🏆 🏀 💗 🕑 🚫 ☢ 🍉 🍏 🍅 🥒 🍄 🍗 🍖 🌭 🥘 🥘 🍺 👩 🌱 ☀ 🕎`
+    .split(' ')
+    .filter(v => v)
+    .map(v => ({ text: v }))
+
+    const userid = this.props.match.params.user
+    const Item = List.Item
+    const users = this.props.chat.users
+    if(!users[userid]) {
+      return null
+    }
+    const chatid = getChatId(userid, this.props.user._id)
+    const chatmsgs = this.props.chat.chatmsg.filter(v => v.chatid === chatid)
     return (
       <div id='chat-page'>
-        <NavBar mode='dark'>
-          { this.props.match.params.user }
+        <NavBar
+          mode='dark'
+          icon={<Icon type="left" />}
+          onLeftClick={() => {
+            this.props.history.goBack()
+          }}
+        >
+          { users[userid].name }
         </NavBar>
-        { this.props.chat.chatmsg.map(v => {
-          return v.from === user?(
-            <p key={v._id}>对方发来的:{v.content}</p>
+        { chatmsgs.map(v => {
+          const avatar = require(`../img/${users[v.from].avatar}.png`)
+          return v.from === userid?(
+            <List key={ v._id }>
+              <Item 
+                thumb={ avatar }
+              >{ v.content }</Item>
+            </List>
           ):(
-            <p key={v._id}>我发的:{v.content}</p>
+            <List key={ v._id }>
+              <Item 
+                // eslint-disable-next-line jsx-a11y/alt-text
+                extra={ <img src={avatar} /> }
+                className='chat-me'
+              >{ v.content }</Item>
+            </List>
           )
-          return <p key={v._id}>{v.content}</p>
         }) }
         <div className='stick-footer'>
           <List>
@@ -55,9 +92,36 @@ class Chat extends React.Component{
               onChange={v=>{
                 this.setState({text:v})
               }}
-              extra={<span onClick={() => this.handleSubmit()}>发送</span>}
+              extra={
+                <div>
+                  {/* eslint-disable-next-line jsx-a11y/accessible-emoji*/}
+                  <span 
+                    className='emoji_span'
+                    onClick = {() => {
+                      this.setState({
+                        showEmoji: !this.state.showEmoji
+                      })
+                      this.fixCarousel()
+                    }}
+                  >😃</span>
+                  <span onClick={() => this.handleSubmit()}>发送</span>
+                </div>
+              }
             ></InputItem>
           </List>
+          { this.state.showEmoji ?
+            <Grid 
+              data={ emoji }
+              columnNum={ 9 }
+              carouselMaxRow={ 4 }
+              isCarousel={ true }
+              onClick={el => {
+                this.setState({
+                  text: this.state.text+el.text
+                })
+              }}
+            /> :
+            null}
         </div>
       </div>
     )
