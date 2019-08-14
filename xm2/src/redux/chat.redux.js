@@ -19,11 +19,22 @@ const initState = {
 export function chat(state=initState, action) {
   switch(action.type) {
     case MSG_LIST:
-      return { ...state, users: action.payload.users, chatmsg: action.payload.msgs, unread: action.payload.msgs.filter(v=>!v.read&&v.to===action.payload.userid).length }
+      return { 
+        ...state, 
+        users: action.payload.users, 
+        chatmsg: action.payload.msgs, 
+        unread: action.payload.msgs.filter(v=>!v.read&&v.to===action.payload.userid).length 
+      }
     case MSG_RECV:
       const n = action.payload.to === action.userid ? 1 : 0
       return { ...state, chatmsg: [...state.chatmsg, action.payload], unread: state.unread + n }
-    // case MSG_READ:
+    case MSG_READ:
+      const { from, num } = action.payload
+      return { 
+        ...state, 
+        chatmsg: state.chatmsg.map(v =>({ ...v, read: from === v.from ? true: v.read })), // 注意这里map的小技巧
+        unread: state.unread - num
+      }
     default:
       return state
   }
@@ -36,6 +47,9 @@ function msgList(msgs, users, userid) {
 function msgRecv(msg, userid) {
   return { userid, type: MSG_RECV, payload: msg }
 }
+function msgRead({from, userid , num}) {
+  return { type: MSG_READ, payload: {from, userid, num} }
+}
 
 
 export function recvMsg() {
@@ -47,6 +61,18 @@ export function recvMsg() {
   }
 }
 
+
+export function readMsg(from, to, msg) {
+  return async (dispatch, getState) => {
+    let res = await axios.post('/user/readmsg', { from })
+    const userid = getState().user._id
+    console.log(res)
+    if(res.status === 200 && res.data.code === 0) {
+      console.log(345678)
+      dispatch(msgRead({ userid, from, num: res.data.num }))
+    }
+  }
+}
 
 // 发送聊天信息
 export function sendMsg({from, to, msg}) {

@@ -69,6 +69,23 @@ Router.post('/register', function(req, res) {
   })
 })
 
+// 标志为已读
+Router.post('/readmsg', function(req, res) {
+  const userid = req.cookies.userid
+  const { from } = req.body
+  Chat.updateMany(
+    { from, to: userid }, 
+    { '$set': { read: true } },
+    { multi: true }, 
+    function(err, doc) {
+    if(!err) {
+      return res.json({ code: 0, num: doc.nModified })
+    } else {
+      return res.json({ code: 1, msg: '修改失败' })
+    }
+  })
+})
+
 Router.post('/update', function(req, res) {
   const userid = req.cookies.userid
   if (!userid) {

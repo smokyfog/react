@@ -2,14 +2,14 @@ import React from 'react'
 import { List, InputItem, NavBar, Icon, Grid } from 'antd-mobile'
 // import io from 'socket.io-client'
 import { connect } from 'react-redux'
-import { getMsglist, sendMsg, recvMsg } from '../../redux/chat.redux'
+import { getMsglist, sendMsg, recvMsg, readMsg } from '../../redux/chat.redux'
 import { getChatId } from '../../util';
 
 // const socket =  io('ws://localhost:3002')
 
 @connect(
   state => state,
-  { getMsglist, sendMsg, recvMsg }
+  { getMsglist, sendMsg, recvMsg, readMsg }
 )
 class Chat extends React.Component{
   constructor(props){
@@ -28,10 +28,15 @@ class Chat extends React.Component{
   }
   componentDidMount() {
     if(!this.props.chat.chatmsg.length) {
-      this.props.getMsglist()
-      this.props.recvMsg()
+      this.props.getMsglist() // 获取消息列表
+      this.props.recvMsg()  // 请求监听webscoket信息
     }
-    this.fixCarousel()
+    const to = this.props.match.params.user
+    this.props.readMsg(to)  // 读消息将read标志为已读
+  }
+  componentWillUnmount() {
+    const to = this.props.match.params.user
+    this.props.readMsg(to)  // 读消息将read标志为已读
   }
   handleSubmit() {
     // socket.emit('sendmsg', {text: this.state.text})
