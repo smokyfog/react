@@ -1,24 +1,25 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import { Provider } from 'react-redux'
-import { createStore, applyMiddleware, compose } from 'redux'
-import thunk from 'redux-thunk'
-import { 
-  BrowserRouter,
-  Route,
-  Redirect,
-  Switch
-} from 'react-router-dom'
+// import React from 'react';
+// import ReactDOM from 'react-dom';
+// import { Provider } from 'react-redux'
+// import { createStore, applyMiddleware, compose } from 'redux'
+// import thunk from 'redux-thunk'
+// import { 
+//   BrowserRouter,
+//   Route,
+//   Redirect,
+//   Switch
+// } from 'react-router-dom'
 
 // import { counter } from './index.redux'
-import reducers from './reducer'
-import Auth from './Auth'
-import Dashboard from './Dashboard'
-import Demo from './demo'
+// import reducers from './reducer'
+// import Auth from './Auth'
+// import Dashboard from './Dashboard'
+// import Demo from './demo'
 import './config'
-import 'antd-mobile/dist/antd-mobile.css'
+// import 'antd-mobile/dist/antd-mobile.css'
+import './01.learn.redux'
 
-ReactDOM.render(<Demo></Demo>, document.getElementById('root'))
+// ReactDOM.render(<Demo></Demo>, document.getElementById('root'))
 
 // // compose把多个中间件连接在一块
 // const store = createStore(reducers, compose(
