@@ -1,5 +1,5 @@
-// import React from 'react';
-// import ReactDOM from 'react-dom';
+import React from 'react';
+import ReactDOM from 'react-dom';
 // import { Provider } from 'react-redux'
 // import { createStore, applyMiddleware, compose } from 'redux'
 // import thunk from 'redux-thunk'
@@ -18,8 +18,9 @@
 import './config'
 // import 'antd-mobile/dist/antd-mobile.css'
 import './01.learn.redux'
+import Page from  './context.demo'
 
-// ReactDOM.render(<Demo></Demo>, document.getElementById('root'))
+ReactDOM.render(<Page></Page>, document.getElementById('root'))
 
 // // compose把多个中间件连接在一块
 // const store = createStore(reducers, compose(
